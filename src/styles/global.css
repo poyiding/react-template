@@ -1,0 +1,104 @@
+:root {
+  color: #1f2937;
+  background: #f5f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 64px;
+  padding: 0 18px;
+  overflow: hidden;
+}
+
+.app-logo-mark {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 700;
+  background: #1677ff;
+  border-radius: 6px;
+}
+
+.app-logo-text {
+  white-space: nowrap;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.app-content {
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  background: #f5f7fb;
+}
+
+.page-stack {
+  width: 100%;
+}
+
+.login-page {
+  display: grid;
+  min-height: 100vh;
+  padding: 24px;
+  place-items: center;
+  background:
+    linear-gradient(135deg, rgba(22, 119, 255, 0.08), transparent 42%),
+    #f5f7fb;
+}
+
+.login-panel {
+  width: min(420px, 100%);
+}
+
+.login-heading {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.login-heading .ant-typography {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+  .app-content {
+    padding: 16px;
+  }
+
+  .app-header {
+    padding: 0 12px;
+  }
+}
