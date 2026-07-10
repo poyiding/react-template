@@ -55,10 +55,34 @@ pnpm install
 pnpm dev
 ```
 
+## 提交规范
+
+项目使用 Husky、lint-staged 和 commitlint 统一提交质量：
+
+- `pre-commit`：对暂存的 JavaScript/TypeScript 文件执行 ESLint，对暂存的配置、样式和文档执行 Prettier 检查；存在错误或警告时禁止提交。
+- `commit-msg`：校验提交信息是否符合 Conventional Commits。
+
+提交信息格式：
+
+```txt
+<type>(<scope>): <subject>
+```
+
+常用类型包括 `feat`、`fix`、`docs`、`style`、`refactor`、`perf`、`test`、`build`、`ci`、`chore` 和 `revert`。例如：
+
+```txt
+feat(auth): add login page
+fix(router): handle unknown routes
+docs: update environment setup
+```
+
+安装依赖时会通过 `prepare` 脚本自动启用 Git Hooks，无需手动初始化。
+
 ## 常用命令
 
 ```bash
 pnpm lint
+pnpm lint:staged
 pnpm typecheck
 pnpm build
 pnpm preview
