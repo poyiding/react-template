@@ -14,21 +14,27 @@
 - ESLint
 - Prettier
 
-
 ## 环境要求
 
-建议团队统一使用以下版本，避免不同机器上的依赖解析和构建结果不一致。
+项目统一使用以下开发环境：
 
-- Node.js：建议使用 20 LTS 或 22 LTS，最低要求 `>=20.9.0`
-- pnpm：建议通过 Corepack 使用 `package.json` 中 `packageManager` 声明的版本；最低要求 `>=10.6.5`
+- Node.js：`24.18.0`（24 LTS）
+- pnpm：`11.10.0`
 
-本项目已在 `package.json` 中声明 `engines`，并通过 `packageManager` 指定 pnpm 版本。新电脑建议先启用 Corepack：
+Node 版本同时记录在 `.nvmrc` 和 `.node-version` 中，分别兼容 nvm 以及 mise、asdf 等版本管理工具。`package.json` 的 `engines` 和 `.npmrc` 会拒绝不兼容的 Node 或 pnpm 版本。
+
+使用 nvm 初始化环境：
 
 ```bash
+nvm install
+nvm use
 corepack enable
+corepack install
 node -v
 pnpm -v
 ```
+
+版本输出应分别为 `v24.18.0` 和 `11.10.0`。请不要绕过 Corepack 全局安装其他 pnpm 版本。
 
 ## 推荐编辑器插件
 
