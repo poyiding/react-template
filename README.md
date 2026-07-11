@@ -88,6 +88,12 @@ pnpm build
 pnpm preview
 ```
 
+## 生产级完善路线
+
+项目计划沿用 React、Vite、React Router、Zustand 和 Axios，并参考 Ant Design Pro，引入 Pro Components、TanStack Query、测试与 Mock、OpenAPI 代码生成以及统一路由权限配置。
+
+分阶段任务、优先级和验收标准见 [`docs/production-roadmap.md`](docs/production-roadmap.md)。
+
 ## 目录说明
 
 ```txt
