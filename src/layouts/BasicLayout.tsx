@@ -4,7 +4,7 @@ import {
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Layout, Menu, Space, Typography } from "antd";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { AppLogo } from "@/components/AppLogo";
@@ -19,18 +19,6 @@ export function BasicLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
-
-  const selectedKeys = useMemo(() => {
-    const matched = appMenuItems?.find((item) => {
-      if (!item || !("key" in item)) {
-        return false;
-      }
-
-      return location.pathname.startsWith(String(item.key));
-    });
-
-    return matched && "key" in matched ? [String(matched.key)] : [];
-  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -49,9 +37,10 @@ export function BasicLayout() {
       >
         <AppLogo collapsed={collapsed} />
         <Menu
+          defaultOpenKeys={location.pathname.startsWith("/system") ? ["/system"] : []}
           items={appMenuItems}
           mode="inline"
-          selectedKeys={selectedKeys}
+          selectedKeys={[location.pathname]}
           onClick={({ key }) => navigate(key)}
         />
       </Sider>

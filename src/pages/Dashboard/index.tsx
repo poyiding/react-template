@@ -12,7 +12,7 @@ export function DashboardPage() {
   useDocumentTitle("工作台 - React Template");
 
   return (
-    <Space className="page-stack" direction="vertical" size={16}>
+    <Space className="page-stack" orientation="vertical" size={16}>
       <div>
         <Typography.Title level={3}>工作台</Typography.Title>
         <Typography.Text type="secondary">
