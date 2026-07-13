@@ -1,3 +1,4 @@
+import { PageContainer } from "@ant-design/pro-components";
 import { Card, Col, Row, Space, Statistic, Typography } from "antd";
 
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
@@ -12,29 +13,27 @@ export function DashboardPage() {
   useDocumentTitle("工作台 - React Template");
 
   return (
-    <Space className="page-stack" orientation="vertical" size={16}>
-      <div>
-        <Typography.Title level={3}>工作台</Typography.Title>
-        <Typography.Text type="secondary">
-          这里是项目核心层示例，后续可以按需接入权限、菜单、主题和业务模块。
-        </Typography.Text>
-      </div>
+    <PageContainer
+      content="这里是项目核心层示例，后续可以按需接入权限、菜单、主题和业务模块。"
+      title="工作台"
+    >
+      <Space className="page-stack" orientation="vertical" size={16}>
+        <Row gutter={[16, 16]}>
+          {stats.map((item) => (
+            <Col key={item.label} lg={8} md={12} sm={24} xs={24}>
+              <Card>
+                <Statistic title={item.label} value={item.value} suffix={item.suffix} />
+              </Card>
+            </Col>
+          ))}
+        </Row>
 
-      <Row gutter={[16, 16]}>
-        {stats.map((item) => (
-          <Col key={item.label} lg={8} md={12} sm={24} xs={24}>
-            <Card>
-              <Statistic title={item.label} value={item.value} suffix={item.suffix} />
-            </Card>
-          </Col>
-        ))}
-      </Row>
-
-      <Card title="基础能力">
-        <Typography.Paragraph>
-          当前模板已包含路由、布局、登录状态、请求封装、Ant Design 主题入口和基础工程规范。
-        </Typography.Paragraph>
-      </Card>
-    </Space>
+        <Card title="基础能力">
+          <Typography.Paragraph>
+            当前模板已包含路由、布局、登录状态、请求封装、Ant Design 主题入口和基础工程规范。
+          </Typography.Paragraph>
+        </Card>
+      </Space>
+    </PageContainer>
   );
 }

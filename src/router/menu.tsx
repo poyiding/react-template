@@ -4,28 +4,28 @@ import {
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
+import type { MenuDataItem } from "@ant-design/pro-components";
 
-export const appMenuItems: MenuProps["items"] = [
+export const appMenuItems: MenuDataItem[] = [
   {
-    key: "/dashboard",
+    path: "/dashboard",
     icon: <DashboardOutlined />,
-    label: "工作台",
+    name: "工作台",
   },
   {
-    key: "/system",
+    path: "/system",
     icon: <SettingOutlined />,
-    label: "系统管理",
+    name: "系统管理",
     children: [
       {
-        key: "/system/users",
+        path: "/system/users",
         icon: <UserOutlined />,
-        label: "用户管理",
+        name: "用户管理",
       },
       {
-        key: "/system/roles",
+        path: "/system/roles",
         icon: <SafetyCertificateOutlined />,
-        label: "角色管理",
+        name: "角色管理",
       },
     ],
   },

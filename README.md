@@ -100,8 +100,16 @@ pnpm lint
 pnpm lint:staged
 pnpm typecheck
 pnpm build
+pnpm build:single
+pnpm build:analyze
 pnpm preview
 ```
+
+生产构建默认使用 `route` 策略，动态导入的页面会按路由生成独立 JS Chunk：
+
+- `pnpm build`：默认按路由拆包，单个 Chunk 的告警预算为 600 kB。
+- `pnpm build:single`：将动态模块合并为单个 JS Chunk，适用于有特殊部署限制的环境。
+- `pnpm build:analyze`：按默认策略构建，并生成 `dist/bundle-report.html` 体积分析报告。
 
 提交前建议至少依次运行：
 

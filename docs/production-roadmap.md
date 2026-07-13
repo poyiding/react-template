@@ -127,22 +127,25 @@ pnpm build
 
 先解决后台整体布局、页面容器、异常兜底和当前主包过大的问题。
 
-### 建议依赖
+### 依赖
 
 ```bash
-pnpm add @ant-design/pro-components antd-style
+pnpm add @ant-design/pro-components@^3.1.14-2 antd-style
 ```
+
+> `@ant-design/pro-components@3.1.14-2` 当前使用 npm `beta` 标签，Peer Dependency 支持 Ant Design 6。项目使用兼容版本范围以接收后续 3.x 更新，升级后需重新执行类型、Peer Dependency 和构建验证。
 
 ### 任务
 
-- [ ] 使用 `ProLayout` 替换当前手写的 `BasicLayout` 主体。
-- [ ] 使用 `PageContainer` 统一页面标题、面包屑和操作区域。
-- [ ] 保留项目品牌、主题 Token 和退出登录等自定义能力。
-- [ ] 使用 React Router lazy route 或 `React.lazy` 实现页面级懒加载。
-- [ ] 增加统一路由 Loading，避免每个页面自行实现。
-- [ ] 增加 React Error Boundary 和统一 403/404/500 页面。
-- [ ] 处理动态 Chunk 加载失败，提供刷新入口。
-- [ ] 增加构建产物分析命令和 Chunk 体积预算。
+- [x] 使用 `ProLayout` 替换当前手写的 `BasicLayout` 主体。
+- [x] 使用 `PageContainer` 统一页面标题、面包屑和操作区域。
+- [x] 保留项目品牌、主题 Token 和退出登录等自定义能力。
+- [x] 使用 React Router lazy route 或 `React.lazy` 实现页面级懒加载。
+- [x] 在 Vite 构建配置中提供 `route` / `single` 两种 JS Chunk 策略，默认使用 `route` 按路由拆包；该配置只影响生产构建产物。
+- [x] 增加统一路由 Loading，避免每个页面自行实现。
+- [x] 增加 React Error Boundary 和统一 403/404/500 页面。
+- [x] 处理动态 Chunk 加载失败，提供刷新入口。
+- [x] 增加构建产物分析命令和 Chunk 体积预算。
 
 ### 实施边界
 
@@ -154,7 +157,7 @@ pnpm add @ant-design/pro-components antd-style
 
 - 登录页和后台页均可正常访问。
 - 刷新嵌套路由不会丢失菜单选中状态。
-- 页面切换采用按路由拆包，生产构建不再只有一个大型业务 Chunk。
+- 默认构建采用按路由拆包，切换为 `single` 时可将动态模块合并为单个 JS Chunk。
 - 页面异常不会导致整个应用白屏。
 - Dashboard、用户管理、角色管理均使用统一页面容器。
 
