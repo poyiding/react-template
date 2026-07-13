@@ -36,6 +36,14 @@ pnpm -v
 
 版本输出应分别为 `v24.18.0` 和 `11.10.0`。请不要绕过 Corepack 全局安装其他 pnpm 版本。
 
+## 浏览器支持
+
+项目支持主流现代浏览器，具体范围由 `.browserslistrc` 统一定义：
+
+- Chrome、Edge、Firefox、Safari 和 iOS Safari 最近两个大版本
+- Firefox ESR
+- 排除已停止维护的浏览器
+
 ## 推荐编辑器插件
 
 VS Code / Cursor 打开项目后会提示安装 `.vscode/extensions.json` 中的推荐插件。
@@ -54,6 +62,10 @@ VS Code / Cursor 打开项目后会提示安装 `.vscode/extensions.json` 中的
 pnpm install
 pnpm dev
 ```
+
+项目已在 `.env.development` 和 `.env.production` 中提供对应环境的公共配置。新增或调整环境变量时，以 `.env.development` 为默认参考，并同步维护生产环境配置；本地私有覆盖可写入不会提交到 Git 的 `.env.development.local`。
+
+必要环境变量缺失时，开发服务器和构建命令会直接提示缺失的变量名。
 
 ## 提交规范
 
@@ -81,11 +93,23 @@ docs: update environment setup
 ## 常用命令
 
 ```bash
+pnpm dev
+pnpm format
+pnpm format:check
 pnpm lint
 pnpm lint:staged
 pnpm typecheck
 pnpm build
 pnpm preview
+```
+
+提交前建议至少依次运行：
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm build
 ```
 
 ## 生产级完善路线

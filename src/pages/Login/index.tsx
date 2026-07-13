@@ -60,12 +60,7 @@ export function LoginPage() {
             name="username"
             rules={[{ required: true, message: "请输入用户名" }]}
           >
-            <Input
-              autoFocus
-              placeholder="admin"
-              prefix={<UserOutlined />}
-              size="large"
-            />
+            <Input autoFocus placeholder="admin" prefix={<UserOutlined />} size="large" />
           </Form.Item>
 
           <Form.Item
@@ -73,11 +68,7 @@ export function LoginPage() {
             name="password"
             rules={[{ required: true, message: "请输入密码" }]}
           >
-            <Input.Password
-              placeholder="任意密码"
-              prefix={<LockOutlined />}
-              size="large"
-            />
+            <Input.Password placeholder="任意密码" prefix={<LockOutlined />} size="large" />
           </Form.Item>
 
           <Button block htmlType="submit" loading={loading} size="large" type="primary">

@@ -97,13 +97,12 @@ src/
 
 ### 任务
 
-- [ ] 增加 `format:check` 命令，供 CI 使用。
-- [ ] 补充 `.prettierrc`、`.prettierignore` 和 `.editorconfig`。
-- [ ] 明确支持的浏览器范围并配置 Browserslist。
-- [ ] 增加 `.env.example`，说明全部公开环境变量。
-- [ ] 清理构建产物，确认 `dist` 不进入版本控制。
-- [ ] 在 README 中记录基础验证命令和 Node/pnpm 要求。
-- [ ] 建立架构决策记录目录 `docs/adr/`。
+- [x] 增加 `format:check` 命令，供 CI 使用。
+- [x] 补充 `.prettierrc`、`.prettierignore` 和 `.editorconfig`。
+- [x] 明确支持的浏览器范围并配置 Browserslist。
+- [x] 以 `.env.development` 记录开发环境所需的公开环境变量。
+- [x] 清理构建产物，确认 `dist` 不进入版本控制。
+- [x] 在 README 中记录基础验证命令和 Node/pnpm 要求。
 
 ### 推荐验证命令
 

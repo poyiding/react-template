@@ -32,8 +32,7 @@ export function DashboardPage() {
 
       <Card title="基础能力">
         <Typography.Paragraph>
-          当前模板已包含路由、布局、登录状态、请求封装、Ant Design
-          主题入口和基础工程规范。
+          当前模板已包含路由、布局、登录状态、请求封装、Ant Design 主题入口和基础工程规范。
         </Typography.Paragraph>
       </Card>
     </Space>
