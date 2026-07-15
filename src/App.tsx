@@ -1,6 +1,7 @@
 import { App as AntdApp, ConfigProvider, theme } from "antd";
 import zhCN from "antd/locale/zh_CN";
 
+import { QueryProvider } from "@/app/providers/QueryProvider";
 import { AppRouter } from "@/router";
 
 function App() {
@@ -17,9 +18,11 @@ function App() {
         },
       }}
     >
-      <AntdApp>
-        <AppRouter />
-      </AntdApp>
+      <QueryProvider>
+        <AntdApp>
+          <AppRouter />
+        </AntdApp>
+      </QueryProvider>
     </ConfigProvider>
   );
 }

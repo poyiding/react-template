@@ -1,6 +1,6 @@
 import type { LoginFormValues, LoginResult } from "@/types/auth";
 
-export async function loginApi(values: LoginFormValues): Promise<LoginResult> {
+export async function mockLogin(values: LoginFormValues): Promise<LoginResult> {
   await new Promise((resolve) => window.setTimeout(resolve, 400));
 
   return {

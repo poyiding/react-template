@@ -3,8 +3,8 @@ import { App as AntdApp, Button, Card, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { loginApi } from "@/api/auth";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { login as loginService } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 import type { LoginFormValues } from "@/types/auth";
 
@@ -30,7 +30,7 @@ export function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await loginApi(values);
+      const result = await loginService(values);
       login(result);
       message.success("登录成功");
       navigate(redirectPath, { replace: true });
