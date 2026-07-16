@@ -23,7 +23,6 @@ import {
 } from "antd";
 import { useState } from "react";
 
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import type { CreateUserInput, User, UserListParams } from "@/types/user";
 
 import {
@@ -48,8 +47,6 @@ function getErrorMessage(error: unknown) {
 }
 
 export function UserManagementPage() {
-  useDocumentTitle("用户管理 - React Template");
-
   const { message } = AntdApp.useApp();
   const [form] = Form.useForm<CreateUserInput>();
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -190,7 +187,6 @@ export function UserManagementPage() {
           新建用户
         </Button>
       }
-      title="用户管理"
     >
       <Card>
         <Space.Compact style={{ marginBottom: 16 }}>

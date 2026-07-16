@@ -1,9 +1,4 @@
-import {
-  mockCreateUser,
-  mockDeleteUser,
-  mockGetUsers,
-  mockUpdateUser,
-} from "@/mocks/users";
+import { mockCreateUser, mockDeleteUser, mockGetUsers, mockUpdateUser } from "@/mocks/users";
 import type { PaginationResult } from "@/types/common";
 import type { CreateUserInput, UpdateUserInput, User, UserListParams } from "@/types/user";
 

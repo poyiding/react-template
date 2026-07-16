@@ -3,7 +3,6 @@ import { App as AntdApp, Button, Card, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { login as loginService } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 import type { LoginFormValues } from "@/types/auth";
@@ -15,8 +14,6 @@ type LoginLocationState = {
 };
 
 export function LoginPage() {
-  useDocumentTitle("登录 - React Template");
-
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);

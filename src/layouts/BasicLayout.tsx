@@ -8,7 +8,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppFooter } from "@/components/AppFooter";
 import { AppLogo } from "@/components/AppLogo";
 import { UserAvatarDropdown } from "@/components/UserAvatarDropdown";
-import { appMenuItems } from "@/router/menu";
+import { proLayoutRoute } from "@/router/routes";
 import { useAuthStore } from "@/stores/auth.store";
 import { appEnv } from "@/utils/env";
 
@@ -45,7 +45,7 @@ export function BasicLayout() {
       logo={<AppLogo />}
       menu={{ locale: false }}
       navTheme="light"
-      route={{ path: "/", routes: appMenuItems }}
+      route={proLayoutRoute}
       siderWidth={232}
       title={appEnv.title}
       actionsRender={() => [

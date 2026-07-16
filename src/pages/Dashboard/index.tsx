@@ -1,8 +1,6 @@
 import { PageContainer } from "@ant-design/pro-components";
 import { Card, Col, Row, Space, Statistic, Typography } from "antd";
 
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-
 const stats = [
   { label: "今日访问", value: 1280 },
   { label: "待处理任务", value: 18 },
@@ -10,13 +8,8 @@ const stats = [
 ];
 
 export function DashboardPage() {
-  useDocumentTitle("工作台 - React Template");
-
   return (
-    <PageContainer
-      content="这里是项目核心层示例，后续可以按需接入权限、菜单、主题和业务模块。"
-      title="工作台"
-    >
+    <PageContainer content="这里是项目核心层示例，后续可以按需接入权限、菜单、主题和业务模块。">
       <Space className="page-stack" orientation="vertical" size={16}>
         <Row gutter={[16, 16]}>
           {stats.map((item) => (
