@@ -53,6 +53,7 @@ export function UserManagementPage() {
   const [keyword, setKeyword] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [params, setParams] = useState<UserListParams>(initialParams);
+
   const usersQuery = useUsersQuery(params);
   const createMutation = useCreateUserMutation();
   const updateMutation = useUpdateUserMutation();

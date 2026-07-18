@@ -3,3 +3,4 @@ dist
 dist-ssr
 coverage
 pnpm-lock.yaml
+public/mockServiceWorker.js

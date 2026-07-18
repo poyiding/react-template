@@ -223,20 +223,20 @@ pnpm exec msw init public --save
 
 #### 任务
 
-- [ ] 保留统一 `QueryClient`，只配置查询重试、缓存时间和窗口刷新等必要默认值。
-- [ ] Query Key 就近定义，删除尚无真实查询使用的 Detail Key 等超前设计。
-- [ ] 后端接口接入后，按实际响应结构读取错误码和错误信息，不在前端预定义错误分类。
-- [ ] 保持 Axios Client 只处理 Token 和 401 等通用行为，响应解包放在实际 Service 中。
-- [ ] 保持 Service 与 React、Zustand、TanStack Query 解耦。
-- [ ] 引入 MSW，把现有登录和用户内存 Mock 改造成 `/auth/login`、`/users` 等模拟后端接口。
-- [ ] 将 `auth`、`user` 等全部领域 Service 改为调用统一 `http` 实例，禁止直接导入 Mock 函数或数据。
-- [ ] 为每个 Service 显式声明请求参数和返回类型，并按接口契约完成必要的响应转换。
-- [ ] 在应用渲染前启动开发环境 MSW Worker，避免首批请求早于 Worker 初始化。
-- [ ] 使用独立环境开关控制 Mock；开发和测试环境可启用，生产环境默认关闭且不注册 Worker。
-- [ ] 页面、Query Hook 和 Service 不判断 Mock/真实环境，切换真实后端时只调整环境配置。
-- [ ] Mock handlers 按领域组织并保持与真实接口相同的 URL、HTTP Method、状态码和响应结构。
-- [ ] 页面只保留一套服务端请求生命周期，不混用组件内部请求机制与 TanStack Query。
-- [ ] 删除未使用的 `storage` 工具和重复类型。
+- [x] 保留统一 `QueryClient`，只配置查询重试、缓存时间和窗口刷新等必要默认值。
+- [x] Query Key 就近定义，删除尚无真实查询使用的 Detail Key 等超前设计。
+- [x] 后端接口接入后，按实际响应结构读取错误码和错误信息，不在前端预定义错误分类。
+- [x] 保持 Axios Client 只处理 Token 和 401 等通用行为，响应解包放在实际 Service 中。
+- [x] 保持 Service 与 React、Zustand、TanStack Query 解耦。
+- [x] 引入 MSW，把现有登录和用户内存 Mock 改造成 `/auth/login`、`/users` 等模拟后端接口。
+- [x] 将 `auth`、`user` 等全部领域 Service 改为调用统一 `http` 实例，禁止直接导入 Mock 函数或数据。
+- [x] 为每个 Service 显式声明请求参数和返回类型，并按接口契约完成必要的响应转换。
+- [x] 在应用渲染前启动开发环境 MSW Worker，避免首批请求早于 Worker 初始化。
+- [x] 使用独立环境开关控制 Mock；开发和测试环境可启用，生产环境默认关闭且不注册 Worker。
+- [x] 页面、Query Hook 和 Service 不判断 Mock/真实环境，切换真实后端时只调整环境配置。
+- [x] Mock handlers 按领域组织并保持与真实接口相同的 URL、HTTP Method、状态码和响应结构。
+- [x] 页面只保留一套服务端请求生命周期，不混用组件内部请求机制与 TanStack Query。
+- [x] 删除未使用的 `storage` 工具和重复类型。
 
 #### 不做
 

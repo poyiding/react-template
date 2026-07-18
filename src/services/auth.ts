@@ -1,10 +1,14 @@
-import { mockLogin } from "@/mocks/auth";
+import { createResponseError } from "@/api/error";
+import { http } from "@/api/http";
 import type { LoginFormValues, LoginResult } from "@/types/auth";
+import type { ApiResponse } from "@/types/common";
 
-/**
- * 认证领域的统一请求入口。
- * 当前委托给内存 Mock；接入后端时在此替换为 request() 调用。
- */
-export function login(values: LoginFormValues): Promise<LoginResult> {
-  return mockLogin(values);
+export async function login(values: LoginFormValues): Promise<LoginResult> {
+  try {
+    const response = await http.post<ApiResponse<LoginResult>>("/auth/login", values);
+
+    return response.data.data;
+  } catch (error) {
+    throw createResponseError(error, "登录失败，请稍后重试");
+  }
 }

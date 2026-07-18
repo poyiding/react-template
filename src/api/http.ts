@@ -18,7 +18,7 @@ http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 http.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       useAuthStore.getState().logout();

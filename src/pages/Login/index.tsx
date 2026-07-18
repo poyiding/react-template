@@ -1,6 +1,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
 import { App as AntdApp, Button, Card, Form, Input, Typography } from "antd";
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { login as loginService } from "@/services/auth";
@@ -18,23 +18,19 @@ export function LoginPage() {
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
   const { message } = AntdApp.useApp();
-  const [loading, setLoading] = useState(false);
+  const loginMutation = useMutation({ mutationFn: loginService });
 
   const redirectPath =
     (location.state as LoginLocationState | null)?.from?.pathname || "/dashboard";
 
   const handleFinish = async (values: LoginFormValues) => {
-    setLoading(true);
-
     try {
-      const result = await loginService(values);
+      const result = await loginMutation.mutateAsync(values);
       login(result);
       message.success("登录成功");
       navigate(redirectPath, { replace: true });
-    } catch {
-      message.error("登录失败，请稍后重试");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : "登录失败，请稍后重试");
     }
   };
 
@@ -68,7 +64,13 @@ export function LoginPage() {
             <Input.Password placeholder="任意密码" prefix={<LockOutlined />} size="large" />
           </Form.Item>
 
-          <Button block htmlType="submit" loading={loading} size="large" type="primary">
+          <Button
+            block
+            htmlType="submit"
+            loading={loginMutation.isPending}
+            size="large"
+            type="primary"
+          >
             登录
           </Button>
         </Form>
