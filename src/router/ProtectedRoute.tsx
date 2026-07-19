@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { useAuthStore } from "@/stores/auth.store";
+// import { clearSession } from "@/utils/session";
 
 type ProtectedRouteProps = {
   children: ReactNode;
@@ -15,10 +16,24 @@ type ProtectedRouteProps = {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const location = useLocation();
   const token = useAuthStore((state) => state.token);
+  // const permissions = useAuthStore((state) => state.user?.permissions);
+
+  const loginState = {
+    from: {
+      pathname: location.pathname,
+      search: location.search,
+    },
+  };
 
   if (!token) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    return <Navigate replace to="/login" state={loginState} />;
   }
+
+  // // 兼容升级前缺少 permissions 的本地会话，强制重新登录。
+  // if (!Array.isArray(permissions)) {
+  //   clearSession();
+  //   return <Navigate replace to="/login" state={loginState} />;
+  // }
 
   return children;
 }

@@ -1,6 +1,7 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 
 import { useAuthStore } from "@/stores/auth.store";
+import { clearSession } from "@/utils/session";
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -20,8 +21,12 @@ http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 http.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
+    // 真实后端返回密码错误时页面会立即刷新并丢失错误反馈。
+    // 应排除登录接口或区分会话失效与凭证错误。
+    const isLoginRequest = error.config?.url?.split("?")[0] === "/auth/login";
+
+    if (error.response?.status === 401 && !isLoginRequest) {
+      clearSession();
       window.location.assign("/login");
     }
 

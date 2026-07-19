@@ -129,7 +129,8 @@ src/
 ├── app/
 │   ├── providers/          # Query 等全局 Provider
 │   └── query-client.ts
-├── components/             # 无业务含义的公共组件
+├── components/             # 无业务含义的公共组件（含 Access）
+├── hooks/                  # 跨页面 Hook（含 useAccess）
 ├── layouts/                # 应用外壳
 ├── mocks/
 │   ├── browser.ts          # 开发环境 MSW Worker
@@ -139,6 +140,7 @@ src/
 ├── router/
 │   ├── routes.tsx          # 唯一路由元数据
 │   ├── access.ts           # 权限纯函数和过滤逻辑
+│   ├── AccessRoute.tsx     # 页面权限守卫
 │   └── index.tsx           # Router 装配
 ├── services/               # 按领域组织的请求函数
 ├── stores/                 # 客户端全局状态
@@ -166,11 +168,8 @@ src/
 
 ### 当前缺口
 
-- 路由和菜单分别维护，新增页面需要修改两处。
-- HTTP Client 已建立，但演示 Service 仍直接调用内存 Mock。
-- 权限只有“是否存在 Token”，没有权限码、菜单过滤和按钮权限。
-- 403 页面尚未进入真实权限流程。
 - 没有 Vitest 和 Testing Library 测试基线。
+- 标准业务页面模板（批次 D）尚未按 ProTable / ProForm 模式收敛。
 - 存在未使用或超前设计的代码，需要在对应批次顺手收敛。
 
 ## 6. 实施路径
@@ -263,15 +262,15 @@ pnpm exec msw init public --save
 
 #### 任务
 
-- [ ] 为当前用户增加权限码列表，定义稳定的 `Permission` 联合类型。
-- [ ] 实现 `hasPermission`、`hasAnyPermission` 等无副作用纯函数。
-- [ ] 在路由元数据中声明页面权限。
-- [ ] 未登录访问受保护路由时跳转登录，并保留安全的站内回跳地址。
-- [ ] 已登录但无页面权限时进入 403。
-- [ ] 使用同一权限函数过滤菜单，避免显示不可访问入口。
-- [ ] 提供轻量 `Access` 组件或 `useAccess` Hook 处理按钮级权限。
-- [ ] 退出登录时清理会话和 Query 缓存。
-- [ ] 在文档中明确本地 Token 只用于模板演示，真实项目应按后端协议决定存储方式。
+- [x] 为当前用户增加权限码列表，定义稳定的 `Permission` 联合类型。
+- [x] 实现 `hasPermission`、`hasAnyPermission` 等无副作用纯函数。
+- [x] 在路由元数据中声明页面权限。
+- [x] 未登录访问受保护路由时跳转登录，并保留安全的站内回跳地址。
+- [x] 已登录但无页面权限时进入 403。
+- [x] 使用同一权限函数过滤菜单，避免显示不可访问入口。
+- [x] 提供轻量 `Access` 组件或 `useAccess` Hook 处理按钮级权限。
+- [x] 退出登录时清理会话和 Query 缓存。
+- [x] 在文档中明确本地 Token 只用于模板演示，真实项目应按后端协议决定存储方式。
 
 #### 不做
 
@@ -282,6 +281,70 @@ pnpm exec msw init public --save
 - 后端下发可执行路由。
 
 上述能力必须在真实后端认证协议明确后再实现，模板不预设错误的安全方案。
+
+#### Token 存储说明
+
+模板将登录 Token 与用户信息持久化到 `localStorage`（Zustand `persist`），**仅用于本地演示与联调**。真实项目应按后端认证协议决定：
+
+- 是否使用 HttpOnly Cookie、内存会话或短期 Token。
+- 是否需要 Refresh Token、滑动过期或多标签页同步。
+- 退出与 401 时如何清理本地状态。
+
+前端隐藏菜单或按钮不能替代服务端鉴权；所有写操作与敏感读操作必须以服务端权限校验为准。
+
+#### 权限控制示例
+
+路由、菜单和按钮共用 `src/router/access.ts` 中的纯函数；权限码定义在 `src/types/auth.ts`。
+
+**1. 页面权限（路由元数据）**
+
+在 `src/router/routes.tsx` 为页面声明 `access`，由 `AccessRoute` 拦截：
+
+```tsx
+{
+  access: "system:user:view",
+  component: routeComponents.users,
+  name: "用户管理",
+  path: "users",
+}
+```
+
+- 未登录访问受保护布局 → 跳转 `/login`，并保留安全的站内回跳地址。
+- 已登录但缺少 `access` → 跳转 `/403`。
+- 手工输入无权限 URL（如 `viewer` 访问 `/system/roles`）会进入 403。
+
+**2. 菜单权限（同一规则过滤）**
+
+`BasicLayout` 通过 `createAuthorizedLayoutRoute(user.permissions)` 过滤侧栏。父菜单在子项全部不可见时自动隐藏。无需在布局里手写权限分支。
+
+**3. 功能按钮权限（`Access` / `useAccess`）**
+
+用户管理页已接入示例：
+
+```tsx
+import { Access } from "@/components/Access";
+import { useAccess } from "@/hooks/useAccess";
+
+// 组件式：无权限时不渲染（或渲染 fallback）
+<Access permission="system:user:create">
+  <Button type="primary">新建用户</Button>
+</Access>
+
+<Access permission="system:user:delete">
+  <Button danger>删除</Button>
+</Access>
+
+// Hook 式：用于列显隐等逻辑判断
+const access = useAccess();
+const canManageUser = access.canAny(["system:user:update", "system:user:delete"]);
+```
+
+**演示账号（MSW）**
+
+| 账号     | 密码 | 权限效果                                                                              |
+| -------- | ---- | ------------------------------------------------------------------------------------- |
+| `admin`  | 任意 | 全部页面与按钮                                                                        |
+| `viewer` | 任意 | 可见工作台、用户管理；无新建/编辑/删除；角色管理菜单隐藏，直访 `/system/roles` 为 403 |
 
 #### 验收
 

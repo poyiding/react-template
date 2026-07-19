@@ -8,9 +8,10 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppFooter } from "@/components/AppFooter";
 import { AppLogo } from "@/components/AppLogo";
 import { UserAvatarDropdown } from "@/components/UserAvatarDropdown";
-import { proLayoutRoute } from "@/router/routes";
+import { createAuthorizedLayoutRoute } from "@/router/routes";
 import { useAuthStore } from "@/stores/auth.store";
 import { appEnv } from "@/utils/env";
+import { clearSession } from "@/utils/session";
 
 const useStyles = createStyles(({ css }) => ({
   shell: css`
@@ -23,11 +24,11 @@ export function BasicLayout() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
   const { styles } = useStyles();
+  const route = createAuthorizedLayoutRoute(user?.permissions);
 
   const handleLogout = () => {
-    logout();
+    clearSession();
     navigate("/login", { replace: true });
   };
 
@@ -45,7 +46,7 @@ export function BasicLayout() {
       logo={<AppLogo />}
       menu={{ locale: false }}
       navTheme="light"
-      route={proLayoutRoute}
+      route={route}
       siderWidth={232}
       title={appEnv.title}
       actionsRender={() => [

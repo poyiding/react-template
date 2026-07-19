@@ -23,6 +23,8 @@ import {
 } from "antd";
 import { useState } from "react";
 
+import { Access } from "@/components/Access";
+import { useAccess } from "@/hooks/useAccess";
 import type { CreateUserInput, User, UserListParams } from "@/types/user";
 
 import {
@@ -48,11 +50,13 @@ function getErrorMessage(error: unknown) {
 
 export function UserManagementPage() {
   const { message } = AntdApp.useApp();
+  const access = useAccess();
   const [form] = Form.useForm<CreateUserInput>();
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [keyword, setKeyword] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [params, setParams] = useState<UserListParams>(initialParams);
+  const canManageUser = access.canAny(["system:user:update", "system:user:delete"]);
 
   const usersQuery = useUsersQuery(params);
   const createMutation = useCreateUserMutation();
@@ -156,37 +160,47 @@ export function UserManagementPage() {
       render: (createdAt: string) => dateFormatter.format(new Date(createdAt)),
       title: "创建时间",
     },
-    {
-      key: "actions",
-      render: (_, user) => (
-        <Space>
-          <Button icon={<EditOutlined />} type="link" onClick={() => openEditModal(user)}>
-            编辑
-          </Button>
-          <Popconfirm
-            description="删除后无法恢复。"
-            okButtonProps={{ danger: true, loading: deleteMutation.isPending }}
-            title="确定删除该用户吗？"
-            onConfirm={() => handleDelete(user.id)}
-          >
-            <Button danger icon={<DeleteOutlined />} type="link">
-              删除
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-      title: "操作",
-      width: 180,
-    },
+    ...(canManageUser
+      ? [
+          {
+            key: "actions",
+            render: (_: unknown, user: User) => (
+              <Space>
+                <Access permission="system:user:update">
+                  <Button icon={<EditOutlined />} type="link" onClick={() => openEditModal(user)}>
+                    编辑
+                  </Button>
+                </Access>
+                <Access permission="system:user:delete">
+                  <Popconfirm
+                    description="删除后无法恢复。"
+                    okButtonProps={{ danger: true, loading: deleteMutation.isPending }}
+                    title="确定删除该用户吗？"
+                    onConfirm={() => handleDelete(user.id)}
+                  >
+                    <Button danger icon={<DeleteOutlined />} type="link">
+                      删除
+                    </Button>
+                  </Popconfirm>
+                </Access>
+              </Space>
+            ),
+            title: "操作",
+            width: 180,
+          } satisfies NonNullable<TableProps<User>["columns"]>[number],
+        ]
+      : []),
   ];
 
   return (
     <PageContainer
       content="该页面演示 Query 缓存、请求取消以及 Mutation 后的精确缓存失效。"
       extra={
-        <Button icon={<PlusOutlined />} type="primary" onClick={openCreateModal}>
-          新建用户
-        </Button>
+        <Access permission="system:user:create">
+          <Button icon={<PlusOutlined />} type="primary" onClick={openCreateModal}>
+            新建用户
+          </Button>
+        </Access>
       }
     >
       <Card>

@@ -6,10 +6,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { login as loginService } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 import type { LoginFormValues } from "@/types/auth";
+import { getSafeRedirectPath } from "@/utils/redirect";
 
 type LoginLocationState = {
   from?: {
     pathname?: string;
+    search?: string;
   };
 };
 
@@ -20,8 +22,10 @@ export function LoginPage() {
   const { message } = AntdApp.useApp();
   const loginMutation = useMutation({ mutationFn: loginService });
 
-  const redirectPath =
-    (location.state as LoginLocationState | null)?.from?.pathname || "/dashboard";
+  const from = (location.state as LoginLocationState | null)?.from;
+  const redirectPath = getSafeRedirectPath(
+    from?.pathname ? `${from.pathname}${from.search ?? ""}` : undefined,
+  );
 
   const handleFinish = async (values: LoginFormValues) => {
     try {
@@ -52,6 +56,7 @@ export function LoginPage() {
             label="用户名"
             name="username"
             rules={[{ required: true, message: "请输入用户名" }]}
+            extra="演示账号：admin（全部权限）/ viewer（仅工作台与用户查看）"
           >
             <Input autoFocus placeholder="admin" prefix={<UserOutlined />} size="large" />
           </Form.Item>
