@@ -399,12 +399,12 @@ const canManageUser = access.canAny(["system:user:update", "system:user:delete"]
 
 #### 任务
 
-- [ ] 将品牌色、圆角、字体等全局值集中到 `ConfigProvider`。
-- [ ] ProLayout 外观配置保持为少量常量，不建立运行时设置中心。
-- [ ] 组件样式统一使用 `antd-style`，并优先读取主题 Token。
-- [ ] 收敛 `global.css`，只保留 Reset、根节点、通用 Loading 和登录页基础样式。
-- [ ] 清理可由 Ant Design 组件属性或 Token 替代的硬编码颜色和间距。
-- [ ] 检查桌面端和窄屏下的布局、表格滚动和登录页表现。
+- [x] 将品牌色、圆角、字体等全局值集中到 `ConfigProvider`。
+- [x] ProLayout 外观配置保持为少量常量，不建立运行时设置中心。
+- [x] 组件样式统一使用 `antd-style`，并优先读取主题 Token。
+- [x] 收敛 `global.css`，只保留 Reset、根节点、通用 Loading 和登录页基础样式。
+- [x] 清理可由 Ant Design 组件属性或 Token 替代的硬编码颜色和间距。
+- [x] 检查桌面端和窄屏下的布局、表格滚动和登录页表现。
 
 #### 不做
 

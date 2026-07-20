@@ -1,12 +1,41 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { App as AntdApp, Button, Card, Form, Input, Typography } from "antd";
+import { createStyles } from "antd-style";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { login as loginService } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 import type { LoginFormValues } from "@/types/auth";
+import { appEnv } from "@/utils/env";
 import { getSafeRedirectPath } from "@/utils/redirect";
+
+const useStyles = createStyles(({ css, token }) => ({
+  heading: css`
+    margin-bottom: ${token.marginLG}px;
+    text-align: center;
+
+    .ant-typography {
+      margin-bottom: ${token.marginXXS}px;
+    }
+  `,
+  page: css`
+    display: grid;
+    min-height: 100vh;
+    padding: ${token.paddingLG}px;
+    place-items: center;
+    background: ${token.colorBgLayout};
+
+    @media (max-width: ${token.screenXSMax}px) {
+      padding: ${token.padding}px;
+    }
+  `,
+  panel: css`
+    width: 100%;
+    max-width: 420px;
+    border-top: 3px solid ${token.colorPrimary};
+  `,
+}));
 
 type LoginLocationState = {
   from?: {
@@ -20,6 +49,7 @@ export function LoginPage() {
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
   const { message } = AntdApp.useApp();
+  const { styles } = useStyles();
   const loginMutation = useMutation({ mutationFn: loginService });
 
   const from = (location.state as LoginLocationState | null)?.from;
@@ -39,10 +69,10 @@ export function LoginPage() {
   };
 
   return (
-    <main className="login-page">
-      <Card className="login-panel">
-        <div className="login-heading">
-          <Typography.Title level={2}>React Template</Typography.Title>
+    <main className={styles.page}>
+      <Card className={styles.panel}>
+        <div className={styles.heading}>
+          <Typography.Title level={2}>{appEnv.title}</Typography.Title>
           <Typography.Text type="secondary">请输入账号信息进入系统</Typography.Text>
         </div>
 

@@ -36,7 +36,7 @@ export function StandardFormPage() {
     <PageContainer content="独立页面表单包含校验、提交状态、错误反馈与未保存离开确认。">
       <Card>
         <ProForm<StandardFormValues>
-          layout="horizontal"
+          layout="vertical"
           initialValues={{ priority: "normal" }}
           submitter={{ submitButtonProps: { loading: mutation.isPending } }}
           onValuesChange={() => setDirty(true)}

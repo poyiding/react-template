@@ -8,6 +8,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppFooter } from "@/components/AppFooter";
 import { AppLogo } from "@/components/AppLogo";
 import { UserAvatarDropdown } from "@/components/UserAvatarDropdown";
+import { proLayoutAppearance } from "@/layouts/layout.config";
 import { createAuthorizedLayoutRoute } from "@/router/routes";
 import { useAuthStore } from "@/stores/auth.store";
 import { appEnv } from "@/utils/env";
@@ -34,20 +35,14 @@ export function BasicLayout() {
 
   return (
     <ProLayout
+      {...proLayoutAppearance}
       className={styles.shell}
-      breakpoint="lg"
       collapsed={collapsed}
-      contentWidth="Fluid"
-      fixedHeader={false}
-      fixSiderbar
       footerRender={() => <AppFooter />}
-      layout="mix"
       location={{ pathname: location.pathname }}
       logo={<AppLogo />}
       menu={{ locale: false }}
-      navTheme="light"
       route={route}
-      siderWidth={232}
       title={appEnv.title}
       actionsRender={() => [
         <Tooltip key="pro-docs" title="Ant Design Pro 文档">

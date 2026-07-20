@@ -1,23 +1,13 @@
-import { App as AntdApp, ConfigProvider, theme } from "antd";
+import { App as AntdApp, ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 
 import { QueryProvider } from "@/app/providers/QueryProvider";
+import { appTheme } from "@/app/theme";
 import { AppRouter } from "@/router";
 
 function App() {
   return (
-    <ConfigProvider
-      locale={zhCN}
-      theme={{
-        algorithm: theme.defaultAlgorithm,
-        token: {
-          borderRadius: 6,
-          colorPrimary: "#1677ff",
-          fontFamily:
-            "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
-        },
-      }}
-    >
+    <ConfigProvider locale={zhCN} theme={appTheme}>
       <AntdApp>
         <QueryProvider>
           <AppRouter />

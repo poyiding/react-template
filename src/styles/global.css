@@ -1,6 +1,4 @@
 :root {
-  color: #1f2937;
-  background: #f5f7fb;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -19,35 +17,4 @@ body {
 
 #root {
   min-height: 100vh;
-}
-
-.page-stack {
-  width: 100%;
-}
-
-.route-loading {
-  display: grid;
-  min-height: 240px;
-  place-items: center;
-}
-
-.login-page {
-  display: grid;
-  min-height: 100vh;
-  padding: 24px;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(22, 119, 255, 0.08), transparent 42%), #f5f7fb;
-}
-
-.login-panel {
-  width: min(420px, 100%);
-}
-
-.login-heading {
-  margin-bottom: 28px;
-  text-align: center;
-}
-
-.login-heading .ant-typography {
-  margin-bottom: 4px;
 }

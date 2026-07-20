@@ -132,6 +132,7 @@ export function UserManagementPage() {
           initialValues: { name: params.name, status: params.status, username: params.username },
         }}
         options={{ reload: () => usersQuery.refetch(), density: false, setting: false }}
+        scroll={{ x: 960 }}
         toolBarRender={() => [<UserFormModal key="create" />]}
         onSubmit={(values) =>
           updateParams({

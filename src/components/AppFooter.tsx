@@ -2,7 +2,7 @@ import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ css, token }) => ({
   footer: css`
-    padding: 16px 24px;
+    padding: ${token.padding}px ${token.paddingLG}px;
     color: ${token.colorTextDescription};
     font-size: ${token.fontSizeSM}px;
     text-align: center;

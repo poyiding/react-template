@@ -1,5 +1,7 @@
 import { createStyles } from "antd-style";
 
+import { appEnv } from "@/utils/env";
+
 const useStyles = createStyles(({ css, token }) => ({
   logo: css`
     display: inline-flex;
@@ -20,5 +22,5 @@ const useStyles = createStyles(({ css, token }) => ({
 export function AppLogo() {
   const { styles } = useStyles();
 
-  return <div className={styles.logo}>R</div>;
+  return <div className={styles.logo}>{appEnv.title.charAt(0).toUpperCase()}</div>;
 }
