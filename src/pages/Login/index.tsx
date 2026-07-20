@@ -33,8 +33,8 @@ export function LoginPage() {
       login(result);
       message.success("登录成功");
       navigate(redirectPath, { replace: true });
-    } catch (error) {
-      message.error(error instanceof Error ? error.message : "登录失败，请稍后重试");
+    } catch {
+      // HTTP 错误由响应拦截器统一提示。
     }
   };
 

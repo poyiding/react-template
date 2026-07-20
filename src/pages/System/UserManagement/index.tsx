@@ -1,302 +1,168 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusOutlined,
-  ReloadOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { PageContainer } from "@ant-design/pro-components";
-import {
-  Alert,
-  App as AntdApp,
-  Button,
-  Card,
-  Form,
-  Input,
-  Modal,
-  Popconfirm,
-  Select,
-  Space,
-  Table,
-  Tag,
-  type TableProps,
-} from "antd";
-import { useState } from "react";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { PageContainer, ProTable, type ProColumns } from "@ant-design/pro-components";
+import { App as AntdApp, Button, Popconfirm, Space } from "antd";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { Access } from "@/components/Access";
-import { useAccess } from "@/hooks/useAccess";
-import type { CreateUserInput, User, UserListParams } from "@/types/user";
+import type { User, UserListParams, UserStatus } from "@/types/user";
 
-import {
-  useCreateUserMutation,
-  useDeleteUserMutation,
-  useUpdateUserMutation,
-  useUsersQuery,
-} from "./useUserQueries";
+import { UserDetailModal } from "./components/UserDetailModal";
+import { UserFormModal } from "./components/UserFormModal";
+import { useDeleteUserMutation, useUsersQuery } from "./useUserQueries";
 
-const initialParams: UserListParams = {
-  page: 1,
-  pageSize: 10,
-};
+const defaultParams: UserListParams = { page: 1, pageSize: 10 };
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" });
 
-const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
-
-function getErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : "操作失败";
+function readParams(searchParams: URLSearchParams): UserListParams {
+  const page = Number(searchParams.get("page")) || defaultParams.page;
+  const pageSize = Number(searchParams.get("pageSize")) || defaultParams.pageSize;
+  const name = searchParams.get("name") || undefined;
+  const username = searchParams.get("username") || undefined;
+  const status = searchParams.get("status") as UserStatus | null;
+  const sortField = searchParams.get("sortField") as UserListParams["sortField"];
+  const sortOrder = searchParams.get("sortOrder") as UserListParams["sortOrder"];
+  return {
+    page,
+    pageSize,
+    name,
+    sortField: sortField || undefined,
+    sortOrder: sortOrder || undefined,
+    status: status || undefined,
+    username,
+  };
 }
 
 export function UserManagementPage() {
   const { message } = AntdApp.useApp();
-  const access = useAccess();
-  const [form] = Form.useForm<CreateUserInput>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [keyword, setKeyword] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [params, setParams] = useState<UserListParams>(initialParams);
-  const canManageUser = access.canAny(["system:user:update", "system:user:delete"]);
-
+  const [detailUser, setDetailUser] = useState<User | null>(null);
+  const params = useMemo(() => readParams(searchParams), [searchParams]);
   const usersQuery = useUsersQuery(params);
-  const createMutation = useCreateUserMutation();
-  const updateMutation = useUpdateUserMutation();
   const deleteMutation = useDeleteUserMutation();
 
-  const openCreateModal = () => {
-    setEditingUser(null);
-    form.setFieldsValue({
-      role: "普通用户",
-      status: "enabled",
-    });
-    setModalOpen(true);
+  const updateParams = (next: Partial<UserListParams>) => {
+    const merged = { ...params, ...next };
+    const values = Object.entries(merged).filter(
+      ([, value]) => value !== undefined && value !== "",
+    );
+    setSearchParams(new URLSearchParams(values.map(([key, value]) => [key, String(value)])));
   };
 
-  const openEditModal = (user: User) => {
-    setEditingUser(user);
-    form.setFieldsValue({
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      status: user.status,
-      username: user.username,
-    });
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setEditingUser(null);
-    form.resetFields();
-  };
-
-  const handleMutationError = (error: unknown) => {
-    message.error(getErrorMessage(error));
-  };
-
-  const handleSubmit = (values: CreateUserInput) => {
-    const callbacks = {
-      onError: handleMutationError,
-      onSuccess: () => {
-        message.success(editingUser ? "用户更新成功" : "用户创建成功");
-        closeModal();
-      },
-    };
-
-    if (editingUser) {
-      updateMutation.mutate({ ...values, id: editingUser.id }, callbacks);
-      return;
-    }
-
-    createMutation.mutate(values, callbacks);
-  };
-
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(id, {
-      onError: handleMutationError,
-      onSuccess: () => message.success("用户删除成功"),
-    });
-  };
-
-  const handleSearch = () => {
-    setParams((current) => ({
-      ...current,
-      keyword: keyword.trim() || undefined,
-      page: 1,
-    }));
-  };
-
-  const columns: TableProps<User>["columns"] = [
+  const columns: ProColumns<User>[] = [
     {
       dataIndex: "name",
-      key: "name",
       title: "姓名",
+      fieldProps: { placeholder: "请输入姓名" },
+      sorter: true,
+      sortOrder: params.sortField === "name" ? params.sortOrder : null,
     },
     {
       dataIndex: "username",
-      key: "username",
       title: "用户名",
-    },
-    {
-      dataIndex: "email",
-      key: "email",
-      title: "邮箱",
-    },
-    {
-      dataIndex: "role",
-      key: "role",
-      title: "角色",
+      fieldProps: { placeholder: "请输入用户名" },
     },
     {
       dataIndex: "status",
-      key: "status",
-      render: (status: User["status"]) =>
-        status === "enabled" ? <Tag color="success">启用</Tag> : <Tag>停用</Tag>,
       title: "状态",
+      valueType: "select",
+      valueEnum: {
+        enabled: { text: "启用", status: "Success" },
+        disabled: { text: "停用", status: "Default" },
+      },
     },
+    { dataIndex: "email", title: "邮箱", search: false },
+    { dataIndex: "role", title: "角色", search: false },
     {
       dataIndex: "createdAt",
-      key: "createdAt",
-      render: (createdAt: string) => dateFormatter.format(new Date(createdAt)),
       title: "创建时间",
+      search: false,
+      sorter: true,
+      sortOrder: params.sortField === "createdAt" ? params.sortOrder : null,
+      render: (_, user) => dateFormatter.format(new Date(user.createdAt)),
     },
-    ...(canManageUser
-      ? [
-          {
-            key: "actions",
-            render: (_: unknown, user: User) => (
-              <Space>
-                <Access permission="system:user:update">
-                  <Button icon={<EditOutlined />} type="link" onClick={() => openEditModal(user)}>
-                    编辑
-                  </Button>
-                </Access>
-                <Access permission="system:user:delete">
-                  <Popconfirm
-                    description="删除后无法恢复。"
-                    okButtonProps={{ danger: true, loading: deleteMutation.isPending }}
-                    title="确定删除该用户吗？"
-                    onConfirm={() => handleDelete(user.id)}
-                  >
-                    <Button danger icon={<DeleteOutlined />} type="link">
-                      删除
-                    </Button>
-                  </Popconfirm>
-                </Access>
-              </Space>
-            ),
-            title: "操作",
-            width: 180,
-          } satisfies NonNullable<TableProps<User>["columns"]>[number],
-        ]
-      : []),
+    {
+      title: "操作",
+      search: false,
+      valueType: "option",
+      width: 220,
+      render: (_, user) => (
+        <Space>
+          <Access permission="system:user:view">
+            <Button icon={<EyeOutlined />} type="link" onClick={() => setDetailUser(user)}>
+              详情
+            </Button>
+          </Access>
+          <Access permission="system:user:update">
+            <Button icon={<EditOutlined />} type="link" onClick={() => setEditingUser(user)}>
+              编辑
+            </Button>
+          </Access>
+          <Access permission="system:user:delete">
+            <Popconfirm
+              title="确定删除该用户吗？"
+              description="删除后无法恢复。"
+              okButtonProps={{ danger: true, loading: deleteMutation.isPending }}
+              onConfirm={() =>
+                deleteMutation.mutate(user.id, {
+                  onSuccess: () => message.success("用户删除成功"),
+                })
+              }
+            >
+              <Button danger icon={<DeleteOutlined />} type="link">
+                删除
+              </Button>
+            </Popconfirm>
+          </Access>
+        </Space>
+      ),
+    },
   ];
 
   return (
-    <PageContainer
-      content="该页面演示 Query 缓存、请求取消以及 Mutation 后的精确缓存失效。"
-      extra={
-        <Access permission="system:user:create">
-          <Button icon={<PlusOutlined />} type="primary" onClick={openCreateModal}>
-            新建用户
-          </Button>
-        </Access>
-      }
-    >
-      <Card>
-        <Space.Compact style={{ marginBottom: 16 }}>
-          <Input
-            allowClear
-            placeholder="搜索姓名、用户名或邮箱"
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
-            onPressEnter={handleSearch}
-          />
-          <Button icon={<SearchOutlined />} onClick={handleSearch}>
-            搜索
-          </Button>
-          <Button icon={<ReloadOutlined />} onClick={() => usersQuery.refetch()}>
-            刷新
-          </Button>
-        </Space.Compact>
-
-        {usersQuery.isError ? (
-          <Alert
-            showIcon
-            action={
-              <Button size="small" onClick={() => usersQuery.refetch()}>
-                重试
-              </Button>
-            }
-            description={getErrorMessage(usersQuery.error)}
-            message="用户列表加载失败"
-            style={{ marginBottom: 16 }}
-            type="error"
-          />
-        ) : null}
-
-        <Table<User>
-          columns={columns}
-          dataSource={usersQuery.data?.list ?? []}
-          loading={usersQuery.isPending || usersQuery.isFetching}
-          pagination={{
-            current: params.page,
-            pageSize: params.pageSize,
-            showSizeChanger: true,
-            total: usersQuery.data?.total ?? 0,
-            onChange: (page, pageSize) => setParams((current) => ({ ...current, page, pageSize })),
-          }}
-          rowKey="id"
-        />
-      </Card>
-
-      <Modal
-        destroyOnHidden
-        confirmLoading={createMutation.isPending || updateMutation.isPending}
-        open={modalOpen}
-        title={editingUser ? "编辑用户" : "新建用户"}
-        onCancel={closeModal}
-        onOk={() => form.submit()}
-      >
-        <Form<CreateUserInput>
-          form={form}
-          layout="vertical"
-          preserve={false}
-          onFinish={handleSubmit}
-        >
-          <Form.Item label="姓名" name="name" rules={[{ required: true, message: "请输入姓名" }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="用户名"
-            name="username"
-            rules={[{ required: true, message: "请输入用户名" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="邮箱"
-            name="email"
-            rules={[
-              { required: true, message: "请输入邮箱" },
-              { type: "email", message: "请输入有效邮箱" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="角色" name="role" rules={[{ required: true, message: "请输入角色" }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="状态" name="status" rules={[{ required: true }]}>
-            <Select
-              options={[
-                { label: "启用", value: "enabled" },
-                { label: "停用", value: "disabled" },
-              ]}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+    <PageContainer content="用户查询、编辑和删除均由 Query 与 Mutation 管理请求生命周期。">
+      <ProTable<User>
+        rowKey="id"
+        columns={columns}
+        dataSource={usersQuery.data?.list ?? []}
+        loading={usersQuery.isPending || usersQuery.isFetching}
+        search={{ labelWidth: "auto" }}
+        form={{
+          initialValues: { name: params.name, status: params.status, username: params.username },
+        }}
+        options={{ reload: () => usersQuery.refetch(), density: false, setting: false }}
+        toolBarRender={() => [<UserFormModal key="create" />]}
+        onSubmit={(values) =>
+          updateParams({
+            name: String(values.name || "").trim() || undefined,
+            page: 1,
+            status: (values.status as UserStatus) || undefined,
+            username: String(values.username || "").trim() || undefined,
+          })
+        }
+        onReset={() =>
+          updateParams({ name: undefined, page: 1, status: undefined, username: undefined })
+        }
+        pagination={{
+          current: params.page,
+          pageSize: params.pageSize,
+          total: usersQuery.data?.total ?? 0,
+          showSizeChanger: true,
+        }}
+        onChange={(pagination, _, sorter) => {
+          const current = Array.isArray(sorter) ? sorter[0] : sorter;
+          updateParams({
+            page: pagination.current || 1,
+            pageSize: pagination.pageSize || 10,
+            sortField: current?.field as UserListParams["sortField"],
+            sortOrder: current?.order || undefined,
+          });
+        }}
+        locale={{ emptyText: "暂无用户" }}
+      />
+      <UserFormModal user={editingUser} onClose={() => setEditingUser(null)} />
+      <UserDetailModal user={detailUser} onClose={() => setDetailUser(null)} />
     </PageContainer>
   );
 }

@@ -367,15 +367,15 @@ const canManageUser = access.canAny(["system:user:update", "system:user:delete"]
 
 #### 任务
 
-- [ ] 将用户管理页改造为首个完整示例，复用现有 Query Hooks 和 Service。
-- [ ] ProTable 使用受控数据模式，由 TanStack Query 管理请求生命周期，不同时使用 `ProTable.request` 发起同一请求。
-- [ ] 搜索、分页和排序参数统一进入 Query Key；适合分享的参数同步到 URL。
-- [ ] 使用 `ModalForm` 或 `ProForm` 完成新增、编辑，并由 Mutation 处理提交状态。
-- [ ] Mutation 成功后精确更新或失效相关 Query，不通过刷新整个页面同步数据。
-- [ ] 列表操作、表单入口和详情操作接入统一权限判断。
-- [ ] Loading、Empty、Error、无权限和提交中状态均有明确反馈。
-- [ ] 表格列、表单字段、Query Hooks 和页面类型保留在业务页面目录内。
-- [ ] 提供一个精简的标准表单示例，验证独立页面提交和离开提示等常见流程。
+- [x] 将用户管理页改造为首个完整示例，复用现有 Query Hooks 和 Service。
+- [x] ProTable 使用受控数据模式，由 TanStack Query 管理请求生命周期，不同时使用 `ProTable.request` 发起同一请求。
+- [x] 搜索、分页和排序参数统一进入 Query Key；适合分享的参数同步到 URL。
+- [x] 使用 `ModalForm` 或 `ProForm` 完成新增、编辑，并由 Mutation 处理提交状态。
+- [x] Mutation 成功后精确更新或失效相关 Query，不通过刷新整个页面同步数据。
+- [x] 列表操作、表单入口和详情操作接入统一权限判断。
+- [x] Loading、Empty、Error、无权限和提交中状态均有明确反馈。
+- [x] 表格列、表单字段、Query Hooks 和页面类型保留在业务页面目录内。
+- [x] 提供一个精简的标准表单示例，验证独立页面提交和离开提示等常见流程。
 
 #### 不做
 

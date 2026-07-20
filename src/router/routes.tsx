@@ -1,5 +1,6 @@
 import {
   DashboardOutlined,
+  FormOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
   UserOutlined,
@@ -49,6 +50,10 @@ const routeComponents = {
     import("@/pages/Dashboard").then((module) => ({
       default: module.DashboardPage,
     })),
+  standardForm: () =>
+    import("@/pages/Examples/StandardForm").then((module) => ({
+      default: module.StandardFormPage,
+    })),
   users: () =>
     import("@/pages/System/UserManagement").then((module) => ({
       default: module.UserManagementPage,
@@ -92,6 +97,12 @@ export const appRoutes: AppRoute[] = [
         icon: <DashboardOutlined />,
         name: "工作台",
         path: "dashboard",
+      },
+      {
+        component: routeComponents.standardForm,
+        icon: <FormOutlined />,
+        name: "标准表单",
+        path: "examples/form",
       },
       {
         children: [

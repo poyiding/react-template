@@ -21,24 +21,35 @@ function hasUsername(username: string, excludedId?: string) {
 export const userHandlers = [
   http.get(listUserUrl, async ({ request }) => {
     const url = new URL(request.url);
-    const keyword = url.searchParams.get("keyword")?.trim().toLocaleLowerCase();
+    const name = url.searchParams.get("name")?.trim().toLocaleLowerCase();
+    const username = url.searchParams.get("username")?.trim().toLocaleLowerCase();
+    const status = url.searchParams.get("status");
     const page = Number(url.searchParams.get("page")) || 1;
     const pageSize = Number(url.searchParams.get("pageSize")) || 10;
-    const filteredUsers = keyword
-      ? users.filter((user) =>
-          [user.email, user.name, user.username].some((value) =>
-            value.toLocaleLowerCase().includes(keyword),
-          ),
-        )
-      : users;
+    const sortField = url.searchParams.get("sortField") as "name" | "createdAt" | null;
+    const sortOrder = url.searchParams.get("sortOrder");
+    const filteredUsers = users.filter(
+      (user) =>
+        (!name || user.name.toLocaleLowerCase().includes(name)) &&
+        (!username || user.username.toLocaleLowerCase().includes(username)) &&
+        (!status || user.status === status),
+    );
+    const sortedUsers = sortField
+      ? [...filteredUsers].sort((left, right) => {
+          const leftValue = left[sortField];
+          const rightValue = right[sortField];
+          const result = String(leftValue).localeCompare(String(rightValue), "zh-CN");
+          return sortOrder === "descend" ? -result : result;
+        })
+      : filteredUsers;
     const start = (page - 1) * pageSize;
 
     await delay(MOCK_DELAY);
 
     return HttpResponse.json<ApiResponse<PaginationResult<User>>>({
       data: {
-        list: filteredUsers.slice(start, start + pageSize),
-        total: filteredUsers.length,
+        list: sortedUsers.slice(start, start + pageSize),
+        total: sortedUsers.length,
       },
     });
   }),

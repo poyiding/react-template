@@ -18,11 +18,11 @@ function App() {
         },
       }}
     >
-      <QueryProvider>
-        <AntdApp>
+      <AntdApp>
+        <QueryProvider>
           <AppRouter />
-        </AntdApp>
-      </QueryProvider>
+        </QueryProvider>
+      </AntdApp>
     </ConfigProvider>
   );
 }

@@ -13,7 +13,11 @@ export type User = {
 };
 
 export type UserListParams = PaginationParams & {
-  keyword?: string;
+  name?: string;
+  sortField?: "name" | "createdAt";
+  sortOrder?: "ascend" | "descend";
+  status?: UserStatus;
+  username?: string;
 };
 
 export type CreateUserInput = Pick<User, "email" | "name" | "role" | "status" | "username">;
