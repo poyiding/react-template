@@ -1,6 +1,5 @@
 import {
   DashboardOutlined,
-  FormOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
   UserOutlined,
@@ -50,10 +49,6 @@ const routeComponents = {
     import("@/pages/Dashboard").then((module) => ({
       default: module.DashboardPage,
     })),
-  standardForm: () =>
-    import("@/pages/Examples/StandardForm").then((module) => ({
-      default: module.StandardFormPage,
-    })),
   users: () =>
     import("@/pages/System/UserManagement").then((module) => ({
       default: module.UserManagementPage,
@@ -97,12 +92,6 @@ export const appRoutes: AppRoute[] = [
         icon: <DashboardOutlined />,
         name: "工作台",
         path: "dashboard",
-      },
-      {
-        component: routeComponents.standardForm,
-        icon: <FormOutlined />,
-        name: "标准表单",
-        path: "examples/form",
       },
       {
         children: [
@@ -236,10 +225,10 @@ const allMenuRoutes = basicLayoutRoute?.children
   ? createMenuRoutes(basicLayoutRoute.children, basicLayoutRoute.path ?? "/")
   : [];
 
-export const proLayoutRoute: ProLayoutProps["route"] = {
-  path: basicLayoutRoute?.path ?? "/",
-  routes: allMenuRoutes,
-};
+// export const proLayoutRoute: ProLayoutProps["route"] = {
+//   path: basicLayoutRoute?.path ?? "/",
+//   routes: allMenuRoutes,
+// };
 
 /** 按当前用户权限生成侧栏菜单，与路由 access 使用同一套规则。 */
 export function createAuthorizedLayoutRoute(

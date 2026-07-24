@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { PageContainer, ProTable, type ProColumns } from "@ant-design/pro-components";
-import { App as AntdApp, Button, Popconfirm, Space } from "antd";
+import { Alert, App as AntdApp, Button, Popconfirm, Space } from "antd";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -13,6 +13,10 @@ import { readUserListParams } from "./params";
 import { useDeleteUserMutation, useUsersQuery } from "./useUserQueries";
 
 const dateFormatter = new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" });
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : "操作失败";
+}
 
 export function UserManagementPage() {
   const { message } = AntdApp.useApp();
@@ -88,6 +92,7 @@ export function UserManagementPage() {
               onConfirm={() =>
                 deleteMutation.mutate(user.id, {
                   onSuccess: () => message.success("用户删除成功"),
+                  onError: (error) => message.error(getErrorMessage(error)),
                 })
               }
             >
@@ -103,6 +108,20 @@ export function UserManagementPage() {
 
   return (
     <PageContainer content="用户查询、编辑和删除均由 Query 与 Mutation 管理请求生命周期。">
+      {usersQuery.isError ? (
+        <Alert
+          showIcon
+          action={
+            <Button size="small" onClick={() => usersQuery.refetch()}>
+              重试
+            </Button>
+          }
+          description={getErrorMessage(usersQuery.error)}
+          message="用户列表加载失败"
+          style={{ marginBottom: 16 }}
+          type="error"
+        />
+      ) : null}
       <ProTable<User>
         rowKey="id"
         columns={columns}
@@ -113,7 +132,6 @@ export function UserManagementPage() {
           initialValues: { name: params.name, status: params.status, username: params.username },
         }}
         options={{ reload: () => usersQuery.refetch(), density: false, setting: false }}
-        scroll={{ x: 960 }}
         toolBarRender={() => [<UserFormModal key="create" />]}
         onSubmit={(values) =>
           updateParams({
