@@ -168,7 +168,6 @@ src/
 
 ### 当前缺口
 
-- 没有 Vitest 和 Testing Library 测试基线。
 - 标准业务页面模板（批次 D）尚未按 ProTable / ProForm 模式收敛。
 - 存在未使用或超前设计的代码，需要在对应批次顺手收敛。
 
@@ -435,18 +434,18 @@ pnpm add -D vitest @vitest/coverage-v8 happy-dom \
 
 #### 任务
 
-- [ ] 配置 Vitest、DOM 环境和测试初始化。
-- [ ] 在测试环境补齐 `matchMedia`、`ResizeObserver` 等 Ant Design 必要 API。
-- [ ] 创建最小自定义 `render`，按需注入 Router、Query 和 Ant Design Provider。
-- [ ] 为路由转菜单、菜单隐藏和嵌套路由转换编写单元测试。
-- [ ] 为权限纯函数、菜单过滤和路由拒绝编写测试。
-- [ ] 为 Axios Token、401 处理和 Query 重试判断编写测试。
-- [ ] 为登录跳转、403 和退出清理编写关键组件测试。
-- [ ] 复用 MSW handlers 测试成功、业务失败、401 和网络异常等请求场景。
-- [ ] 为 ProTable 查询参数、ProForm 提交和 Mutation 后缓存失效编写关键行为测试。
-- [ ] 保留 React Query Devtools 仅在开发环境懒加载。
-- [ ] 保留 Error Boundary、Chunk 加载失败恢复和构建体积分析。
-- [ ] 增加 `test` 和 `test:watch` 命令，并纳入核心完成检查。
+- [x] 配置 Vitest、DOM 环境和测试初始化。
+- [x] 在测试环境补齐 `matchMedia`、`ResizeObserver` 等 Ant Design 必要 API。
+- [x] 创建最小自定义 `render`，按需注入 Router、Query 和 Ant Design Provider。
+- [x] 为路由转菜单、菜单隐藏和嵌套路由转换编写单元测试。
+- [x] 为权限纯函数、菜单过滤和路由拒绝编写测试。
+- [x] 为 Axios Token、401 处理和 Query 重试判断编写测试。
+- [x] 为登录跳转、403 和退出清理编写关键组件测试。
+- [x] 复用 MSW handlers 测试成功、业务失败、401 和网络异常等请求场景。
+- [x] 为 ProTable 查询参数、ProForm 提交和 Mutation 后缓存失效编写关键行为测试。
+- [x] 保留 React Query Devtools 仅在开发环境懒加载。
+- [x] 保留 Error Boundary、Chunk 加载失败恢复和构建体积分析。
+- [x] 增加 `test` 和 `test:watch` 命令，并纳入核心完成检查。
 
 测试应随批次 A 至 E 同步添加；批次 F 负责统一测试工具和补齐缺口，而不是最后重新测试整个项目。
 
