@@ -10,6 +10,11 @@ export const http = axios.create({
   timeout: 15_000,
 });
 
+export function shouldClearSession(error: AxiosError) {
+  const requestPath = error.config?.url?.split("?")[0];
+  return error.response?.status === 401 && requestPath !== "/auth/login";
+}
+
 http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAuthStore.getState().token;
 
@@ -27,11 +32,7 @@ http.interceptors.response.use(
       void message.error(getResponseErrorMessage(error, "请求失败，请稍后重试"));
     }
 
-    // 真实后端返回密码错误时页面会立即刷新并丢失错误反馈。
-    // 应排除登录接口或区分会话失效与凭证错误。
-    const isLoginRequest = error.config?.url?.split("?")[0] === "/auth/login";
-
-    if (error.response?.status === 401 && !isLoginRequest) {
+    if (shouldClearSession(error)) {
       clearSession();
       window.location.assign("/login");
     }
